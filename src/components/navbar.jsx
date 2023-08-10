@@ -10,7 +10,7 @@ export default function Navbar() {
                           <img src="/logo.png" alt="" 
                           className="rounded-full object-cover h-12 w-12"
                           />
-                            <span className="text-2xl md:text-4xl text-blue-600">Supply Chain </span>
+                            <span className="text-2xl md:text-4xl text-emerald-900">Supply Chain Tracker</span>
                         </div>
                         <div className="flex space-x-5">
                            <ConnectButton showBalance={false}/> 

@@ -1,78 +1,45 @@
 import { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
-import detectEthereumProvider from '@metamask/detect-provider';
-
-import {OasisSupplyChainABI} from '../utils/OasisSupplyChainABI'
+import {OasisSupplyChainABI} from '../utils/OasisSupplyChainABI';
+import { 
+  usePrepareContractWrite, 
+  useContractWrite,  
+} from 'wagmi';
 
 import InputField from './InputField';
 import Button from './button';
+import { Spinner } from '@chakra-ui/react'
 
-// Change the contract address to match your deployed contract address
-const contractAddress = "0x4838854e5150E4345Fb4Ae837E9FcCa40D51F3Fe";
+import useSearchItem from '../utils/contract-interact/searchItems';
+import useOrderItem from '../utils/contract-interact/orderItem';
+
 
 function SupplyChain() {
-  const [itemName, setItemName] = useState('');
-  const [itemId, setItemId] = useState(0);
-  const [itemDetails, setItemDetails] = useState(null);
-  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
-  
+  const { 
+    itemId,
+    itemDetails, 
+    setItemId, 
+    getItem,
+    getAllItem,
+    items,
+    setItems, 
+  } = useSearchItem();
+
+    const {
+      isLoading, orderItem, itemName, setItemName
+    } = useOrderItem()
+
+
+
+
   useEffect(() => {
-    const initializeMetaMask = async () => {
-      const provider = await detectEthereumProvider();
-      if (provider) {
-        await provider.request({ method: 'eth_requestAccounts' });
+    getAllItem(); // Run the function when the component mounts
+  }, [items]); // Empty dependency array ensures it runs only once when the component mounts
 
-        const ethersProvider = new ethers.providers.Web3Provider(provider);
-        const signer = ethersProvider.getSigner();
-        const supplyChainContract = new ethers.Contract(contractAddress, OasisSupplyChainABI, signer);
-        // Update the contract instance with the new signer
-        setSupplyChainContract(supplyChainContract);
-      } else {
-        console.error('MetaMask not found');
-      }
-    };
 
-    initializeMetaMask();
-  }, []);
 
   const [supplyChainContract, setSupplyChainContract] = useState(null);
 
-  useEffect(() => {
-    if (supplyChainContract) {
-      loadItems();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [supplyChainContract]);
-
-  const loadItems = async () => {
-    try {
-      setLoading(true);
-      const count = await supplyChainContract.getItemCount();
-      const itemsArray = [];
-      for (let i = 0; i < count.toNumber(); i++) {
-        const item = await supplyChainContract.getItem(i);
-        itemsArray.push(item);
-      }
-      setItems(itemsArray);
-      setLoading(false);
-      setItemName("");
-    } catch (error) {
-      console.error('Error loading items:', error);
-      setLoading(false);
-    }
-  };
-
-  const orderItem = async () => {
-    try {
-      const tx = await supplyChainContract.orderItem(itemName);
-      await tx.wait();
-      console.log('Item ordered successfully!');
-      loadItems();
-    } catch (error) {
-      console.error('Error ordering item:', error);
-    }
-  };
 
   const cancelItem = async (id) => {
     try {
@@ -109,20 +76,6 @@ function SupplyChain() {
     }
   };
 
-  const getItem = async () => {
-    try {
-      setLoading(true);
-
-      const item = await supplyChainContract.getItem(itemId);
-      console.log('Item:', item);
-      setItemDetails(item);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error getting item:', error);
-      setLoading(false);
-    }
-  };
-
   function getStatusText(status) {
     switch (status) {
       case 0:
@@ -154,6 +107,7 @@ function SupplyChain() {
 
   return (
     <>
+
       <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md m-5" data-aos="fade-up" data-aos-offset="300" data-aos-easing="ease-in-sine">
         <div className="m-10 flex justify-between space-x-5">
           <div className="w-full md:w-1/2 flex justify-between items-center space-x-3">
@@ -163,7 +117,7 @@ function SupplyChain() {
               placeholder="Type your item here ..."
             />
             <Button
-              title="Order"
+              title={isLoading ? <Spinner /> : "Order"}
               onClick={orderItem}
               disabled={itemName === ""}
             />
@@ -176,13 +130,13 @@ function SupplyChain() {
               placeholder="Enter item ID ..."
             />
             <Button
-              title="Search"
+              title= "Search"
               onClick={getItem}
               disabled={itemId < 0}
             />
 
-            <button className='mx-5 text-blue-600' onClick={loadItems}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" className="w-6 h-6">
+            <button className='mx-5 text-blue-600' onClick={getAllItem}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" className="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
               </svg>
             </button>
@@ -203,6 +157,7 @@ function SupplyChain() {
               </div>
             )}
           </div>
+   
         </div>
         <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
           <thead className="bg-gray-50">
@@ -237,7 +192,7 @@ function SupplyChain() {
             ) :
               (
                 items
-                  .sort((a, b) => b.id - a.id)
+                  .sort((a, b) => Number(b.id) - Number(a.id))
                   .map((item, index) => (
                     <tr className="hover:bg-gray-50" key={index}>
                       <th className="flex gap-3 px-6 py-2 font-normal text-gree-900">
