@@ -1,4 +1,4 @@
-
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 export default function Navbar() {
     return (
@@ -13,8 +13,7 @@ export default function Navbar() {
                             <span className="text-2xl md:text-4xl text-blue-600">Supply Chain </span>
                         </div>
                         <div className="flex space-x-5">
-                            <a href="https://linkedin.com/in/mesfin-tsegaye" className="text-blue-600 font-semibold">Linkedin</a>
-                            <a href="https://github.com/sciemesfin" className="text-blue-600 font-semibold">GitHub</a>
+                           <ConnectButton showBalance={false}/> 
                         </div>
                     </div>
                 </div>

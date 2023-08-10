@@ -2,14 +2,13 @@ import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import detectEthereumProvider from '@metamask/detect-provider';
 
-//ln -s ../../smart-contract/artifacts/contracts/SupplyChain.sol/SupplyChain.json node_modules/SupplyChain.json
-import SupplyChainABI from "SupplyChain.json";
+import {OasisSupplyChainABI} from '../utils/OasisSupplyChainABI'
 
 import InputField from './InputField';
 import Button from './button';
 
 // Change the contract address to match your deployed contract address
-const contractAddress = "0x0B8693d0eD71BBd841ECE42BC8A36141737A4F4b";
+const contractAddress = "0x4838854e5150E4345Fb4Ae837E9FcCa40D51F3Fe";
 
 function SupplyChain() {
   const [itemName, setItemName] = useState('');
@@ -26,7 +25,7 @@ function SupplyChain() {
 
         const ethersProvider = new ethers.providers.Web3Provider(provider);
         const signer = ethersProvider.getSigner();
-        const supplyChainContract = new ethers.Contract(contractAddress, SupplyChainABI.abi, signer);
+        const supplyChainContract = new ethers.Contract(contractAddress, OasisSupplyChainABI, signer);
         // Update the contract instance with the new signer
         setSupplyChainContract(supplyChainContract);
       } else {

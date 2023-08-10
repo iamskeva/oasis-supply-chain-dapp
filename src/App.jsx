@@ -4,6 +4,7 @@ import Information from './components/information';
 import ExtraInformation from './components/extraInformation';
 import Footer from './components/footer';
 
+
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { useEffect } from 'react';
@@ -23,11 +24,13 @@ export default function App() {
         <div>
           <Form />
         </div>
-        <div>
+        {/* <div>
           <ExtraInformation />
-        </div>
+        </div> */}
       </div>
       <Footer />
+
+      
     </>
   );
 }
