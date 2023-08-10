@@ -16,15 +16,15 @@ function useOrderItem() {
   const orderItem = async => {
     if (write) {
       write(); 
-      if (isSuccess) {
-        getAllItem(); 
-      }
+      // if (isSuccess) {
+      //   getAllItem(); 
+      // }
   }
   }
 
 
   return {
-    isLoading, orderItem, itemName, setItemName
+    isLoading, orderItem, itemName, setItemName, isSuccess,
   };
 }
 

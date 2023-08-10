@@ -3,7 +3,7 @@ import { useContractRead } from 'wagmi';
 import { OasisSupplyChainABI } from '../OasisSupplyChainABI'
 
 function useSearchItem() {
-  const [itemId, setItemId] = useState(0);
+  const [itemId, setItemId] = useState('');
   const [itemDetails, setItemDetails] = useState(null);
   const [items, setItems] = useState([]);
 
@@ -38,6 +38,7 @@ function useSearchItem() {
   return {
     itemId,
     itemDetails,
+    setItemDetails,
     setItemId,
     getItem,
     getAllItem,

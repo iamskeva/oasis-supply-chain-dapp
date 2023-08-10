@@ -6,8 +6,8 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl py-8">
         <div className="md:flex md:space-x-10 text-center justify-center items-center">
           <p className="text-white">© All rights reserved. 2023</p>
-          <a href="https://linkedin.com/in/mesfin-tsegaye" target="_blank" className="text-white" rel="noreferrer">Mesfin Tsegaye
-          </a>
+          {/* <a href="https://linkedin.com/" target="_blank" className="text-white" rel="noreferrer">
+          </a> */}
         </div>
       </div>
     </div>

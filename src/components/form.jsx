@@ -1,23 +1,20 @@
 import { useState, useEffect } from 'react';
-import {OasisSupplyChainABI} from '../utils/OasisSupplyChainABI';
-import { 
-  usePrepareContractWrite, 
-  useContractWrite,  
-} from 'wagmi';
-
 import InputField from './InputField';
 import Button from './button';
 import { Spinner } from '@chakra-ui/react'
-
 import useSearchItem from '../utils/contract-interact/searchItems';
 import useOrderItem from '../utils/contract-interact/orderItem';
+import useApproveItem from '../utils/contract-interact/approveItem';
+import useCancelItem from '../utils/contract-interact/cancelItem';
+import useShipItem from '../utils/contract-interact/shipItem';
 
 
 function SupplyChain() {
   const [loading, setLoading] = useState(false);
   const { 
     itemId,
-    itemDetails, 
+    itemDetails,
+    setItemDetails, 
     setItemId, 
     getItem,
     getAllItem,
@@ -25,56 +22,29 @@ function SupplyChain() {
     setItems, 
   } = useSearchItem();
 
-    const {
-      isLoading, orderItem, itemName, setItemName
-    } = useOrderItem()
+  const {
+      isLoading, orderItem, itemName, setItemName, isSuccess
+  } = useOrderItem()
 
+  const {
+    approveIsLoading, approveItem, approveItemId, 
+    setApproveItemId, approveIsSuccess,
+  } = useApproveItem()
+
+  const {
+    cancelIsLoading, cancelItem, cancelItemId, setCancelItemId, cancelIsSuccess,
+  } = useCancelItem()
+
+  const {
+    shipIsLoading, shipItem, shipItemId, setShipItemId, shipIsSuccess,
+  } = useShipItem()
 
 
 
   useEffect(() => {
-    getAllItem(); // Run the function when the component mounts
-  }, [items]); // Empty dependency array ensures it runs only once when the component mounts
+    getAllItem(); 
+  }, []); 
 
-
-
-  const [supplyChainContract, setSupplyChainContract] = useState(null);
-
-
-  const cancelItem = async (id) => {
-    try {
-      const tx = await supplyChainContract.cancelItem(id);
-      await tx.wait();
-      console.log('Item cancelled successfully!');
-      loadItems();
-    } catch (error) {
-      console.error('Error cancelling item:', error);
-    }
-  };
-
-  const approveItem = async (id) => {
-    try {
-      const tx = await supplyChainContract.approveItem(id);
-      await tx.wait();
-
-      console.log('Item approved successfully!');
-      loadItems();
-    } catch (error) {
-      console.error('Error approving item:', error);
-    }
-  };
-
-  const shipItem = async (id) => {
-    try {
-      const tx = await supplyChainContract.shipItem(id);
-      await tx.wait();
-
-      console.log('Item shipped successfully!');
-      loadItems();
-    } catch (error) {
-      console.error('Error shipping item:', error);
-    }
-  };
 
   function getStatusText(status) {
     switch (status) {
@@ -233,12 +203,24 @@ function SupplyChain() {
                         <div className="flex justify-end space-x-3 gap-4">
                           {item.status === 0 && (
                             <>
-                              <button className='text-red-600' onClick={() => cancelItem(item.id)}>Cancel</button>
-                              <button className='text-green-600' onClick={() => approveItem(item.id)}>Approve</button>
+                              <button 
+                              className='text-red-600' onClick={() => cancelItem(Number(item.id))}>
+                                {cancelIsLoading ? 'Cancelling...' : 'Cancel'}
+                              </button>
+                              <button 
+                              className='text-green-600' onClick={() => approveItem(Number(item.id))}>
+                                {approveIsLoading ? 'Approving...' : 'Approve'}
+                              </button>
                             </>
                           )}
                           {item.status === 1 && (
-                            <button className='text-blue-600' onClick={() => shipItem(item.id)}>Ship Item</button>
+                            <button className='text-blue-600' onClick={() => shipItem(item.id)}>
+                              {shipIsLoading
+                                ? 'Shipping...'
+                                : shipIsSuccess
+                                ? 'Item has been shipped!'
+                                : 'Ship Item'}
+                            </button>
                           )}
                         </div>
                       </td>
