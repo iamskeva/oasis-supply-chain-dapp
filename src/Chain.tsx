@@ -17,12 +17,7 @@ export const OasisSapphireTestnet = {
     etherscan: { name: 'Sapphire', url: 'https://testnet.explorer.sapphire.oasis.dev' },
     default: { name: 'Sapphire', url: 'https://testnet.explorer.sapphire.oasis.dev' },
   },
-//   contracts: {
-//     multicall3: {
-//       address: '0xca11bde05977b3631167028862be2a173976ca11',
-//       blockCreated: 11907934,
-//     },
-//   },
+
 } as const satisfies Chain
 
 

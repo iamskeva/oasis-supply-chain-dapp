@@ -16,9 +16,7 @@ function useOrderItem() {
   const orderItem = async => {
     if (write) {
       write(); 
-      // if (isSuccess) {
-      //   getAllItem(); 
-      // }
+
   }
   }
 
