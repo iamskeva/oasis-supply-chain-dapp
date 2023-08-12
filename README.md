@@ -1,5 +1,8 @@
 # Oasis Supply Chain Tracking DApp
 
+![oasis-banner](public/oasis-orders.png)
+
+
 This project showcases the development and deployment of a decentralized supply chain tracking application on the Oasis blockchain. The DApp enables users to interact with smart contracts to manage the supply chain process efficiently and transparently.
 
 ## Table of Contents
@@ -32,6 +35,8 @@ This project involves the development of a decentralized supply chain tracking D
 - **Cancel orders**: Users can cancel their orders.
 -  **Ship items**: Approved items can be shipped to their destination.
 - **Search and track items**: Users can search for items by ID and track their status.
+
+![oasis-banner](public/oasis-homepage.png)
 
 ## Getting Started
 
